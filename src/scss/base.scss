@@ -1,0 +1,149 @@
+@use './bootstrap' as bs;
+
+//
+// Base
+//
+
+html,
+body,
+#app {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+form {
+  .row + .row {
+    margin-top: map-get(bs.$spacers, 2);
+  }
+}
+
+//
+// Overrides
+//
+
+.border-radius-0 {
+  border-radius: 0;
+}
+
+.overflow {
+  &-x {
+    &-auto {
+      overflow-x: auto;
+    }
+
+    &-hidden {
+      overflow-x: hidden;
+    }
+
+    &-scroll {
+      overflow-x: scroll;
+    }
+  }
+
+  &-y {
+    &-auto {
+      overflow-y: auto;
+    }
+
+    &-hidden {
+      overflow-y: hidden;
+    }
+
+    &-scroll {
+      overflow-y: scroll;
+    }
+  }
+}
+
+.text-nospace {
+  font-size: 0;
+}
+
+.text-prewrap {
+  white-space: pre-wrap;
+}
+
+.text-shadow {
+  text-shadow: bs.$text-shadow;
+}
+
+.text-justified {
+  text-align: justify !important;
+}
+
+.tooltip {
+  z-index: bs.$zindex-toast + 1;
+}
+
+//
+// Custom Classes
+//
+
+.btn-obs {
+  @include bs.button-variant(
+    // Background
+    bs.$input-bg,
+    // Border color
+    bs.$input-border-color,
+    // Text color
+    bs.$body-color,
+    // Hover: Background
+    bs.$obs-bg,
+    // Hover: Border color
+    bs.$obs-bg,
+    // Hover: Text color
+    bs.$body-color,
+    // Active: Background
+    bs.$obs-bg,
+    // Active: Border color
+    bs.$obs-bg,
+    // Active: Text color
+    bs.$body-color,
+    // Disabled: Background
+    bs.$obs-bg,
+    // Disabled: Border color
+    bs.$obs-bg,
+    // Disabled: Text color
+    bs.$body-color
+  );
+}
+
+.btn-outline-obs {
+  @include bs.button-outline-variant(
+    // Text color
+    bs.$obs-bg,
+    // Hover: Text color
+    bs.$body-color,
+    // Active: Background color
+    bs.$obs-bg,
+    // Active: Border color
+    bs.$obs-bg,
+    // Active: Text Color
+    bs.$body-color
+  );
+  color: bs.$body-color;
+}
+
+.scrollbar {
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(bs.$gray-600, 0.6);
+    background-clip: padding-box;
+    border: 3px solid transparent;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-track-piece {
+    background-color: transparent;
+    background-clip: padding-box;
+    border: 3px solid transparent;
+    border-radius: 10px;
+  }
+}
