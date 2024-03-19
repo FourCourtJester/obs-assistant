@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react'
 
-import ActionCreator from './ActionCreator'
+import Creator from './Creator'
 
-describe('ActionCreator', () => {
+describe('Creator', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<ActionCreator />)
+    const { baseElement } = render(<Creator />)
     expect(baseElement).toBeTruthy()
   })
 })

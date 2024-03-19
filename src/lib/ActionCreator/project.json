@@ -1,8 +1,0 @@
-{
-  "name": "ActionCreator",
-  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "src/lib/ActionCreator/src",
-  "projectType": "library",
-  "tags": [],
-  "targets": {}
-}

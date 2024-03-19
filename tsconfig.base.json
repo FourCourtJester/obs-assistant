@@ -15,8 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@obs-assistant/ActionCreator": ["src/lib/ActionCreator/src/index.ts"]
+      "@/*": ["src/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]
