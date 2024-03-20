@@ -3,6 +3,7 @@
 
 // Import interfaces
 import {
+  OBSEventTypes,
   OBSResponseTypes,
   RequestBatchRequest as OBSRequestBatchRequest,
 } from 'obs-websocket-js'
@@ -31,6 +32,7 @@ class Singleton {
         .then(({ currentCollection, scenes }) => {
           // TODO: Persistent storage
           console.log({ currentCollection, scenes })
+          // this.#test()
         })
     })
   }
@@ -85,6 +87,48 @@ class Singleton {
         }
       })
   }
+
+  // #test() {
+  //   const actions = [
+  //     [
+  //       {
+  //         event: 'CurrentProgramSceneChanged',
+  //         data: {
+  //           sceneName: 'Game',
+  //         },
+  //       },
+  //       {
+  //         requestType: 'SetSceneItemEnabled',
+  //         requestData: {
+  //           sceneName: 'Game',
+  //           sceneItemId: 1,
+  //           sceneItemEnabled: true,
+  //         },
+  //       },
+  //     ],
+  //   ]
+
+  //   actions.forEach((action) => {
+  //     const trigger = action[0] as {
+  //       event: keyof OBSEventTypes
+  //       data: { sceneName: string }
+  //     }
+  //     const stages: object[] = action.slice(1) || []
+
+  //     this.#obs.on(
+  //       trigger.event,
+  //       (response: OBSEventTypes[typeof trigger.event]) => {
+  //         const success = Object.entries(trigger.data).some(
+  //           ([key, val]) => response?.[key] === val,
+  //         )
+
+  //         if (!success) return false
+
+  //         return this.#obs.batch(stages as OBSRequestBatchRequest[])
+  //       },
+  //     )
+  //   })
+  // }
 
   // Public Functions
 
