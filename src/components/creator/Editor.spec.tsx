@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react'
 
-import Creator from './Creator'
+import Creator from './Editor'
 
 describe('Creator', () => {
   it('should render successfully', () => {

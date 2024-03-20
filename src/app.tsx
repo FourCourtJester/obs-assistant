@@ -1,17 +1,29 @@
 // Import core components
 import { Container } from 'react-bootstrap'
+import { RouterProvider, createHashRouter } from 'react-router-dom'
 
 // Import our components
-import { ActionCreator } from './components'
-import { useCreator, useOBS } from './hooks'
+import { DefaultPage } from './pages'
+import { Actions, Editor } from './components'
 
 export default function Page() {
-  useCreator()
-  useOBS()
-
   return (
     <Container className="p-0 m-0 h-100" fluid>
-      <ActionCreator />
+      <RouterProvider
+        router={createHashRouter([
+          {
+            path: '/',
+            element: <DefaultPage />,
+            children: [
+              { index: true, element: <Actions /> },
+              {
+                path: 'new',
+                children: [{ path: 'obs', element: <Editor /> }],
+              },
+            ],
+          },
+        ])}
+      ></RouterProvider>
     </Container>
   )
 }

@@ -1,1 +1,1 @@
-export * from './AccordionActionsHeader'
+export * from './AccordionHeader'
