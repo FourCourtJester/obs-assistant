@@ -1,13 +1,17 @@
 // Import core components
 import { useEffect, useState } from 'react'
-import { Accordion, Badge, Button, Col, Form, Row } from 'react-bootstrap'
+import {
+  Accordion,
+  Badge,
+  Button,
+  Col,
+  Form,
+  Row,
+  Spinner,
+} from 'react-bootstrap'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faCheck,
-  faFloppyDisk,
-  faTimes,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faFloppyDisk } from '@fortawesome/free-solid-svg-icons'
 
 // Import our components
 import { useOBS } from '@/hooks'
@@ -57,16 +61,18 @@ export function Credentials(props: CredentialsProps) {
                 </Badge>
               </ToolTip>
             ) : (
-              <ToolTip title="Disconnected">
+              <ToolTip title="Attempting to connect">
                 <Badge className="ms-2" bg="danger">
-                  <FontAwesomeIcon icon={faTimes} />
+                  <Spinner size="sm" />
                 </Badge>
               </ToolTip>
             )}
             <span className="ms-auto">
-              <Button type="submit">
-                <FontAwesomeIcon icon={faFloppyDisk} />
-              </Button>
+              <ToolTip title="Save">
+                <Button type="submit">
+                  <FontAwesomeIcon icon={faFloppyDisk} />
+                </Button>
+              </ToolTip>
             </span>
           </legend>
           <Row className="g-2">

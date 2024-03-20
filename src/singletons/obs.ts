@@ -2,7 +2,13 @@
 import OBSWebSocket from 'obs-websocket-js'
 
 // Import interfaces
-import { OBSRequestTypes, OBSResponseTypes, EventTypes } from 'obs-websocket-js'
+import {
+  EventTypes as OBSEventTypes,
+  OBSRequestTypes,
+  OBSResponseTypes,
+  RequestBatchOptions as OBSRequestBatchOptions,
+  RequestBatchRequest as OBSRequestBatchRequest,
+} from 'obs-websocket-js'
 
 // Import our components
 // ...
@@ -46,7 +52,7 @@ class Singleton {
 
     this.#ws = new OBSWebSocket()
 
-    this.#ws.on('ConnectionOpened', () => {
+    this.#ws.on('Identified', () => {
       console.log('OBS Connection Opened')
 
       this.#config.client.connecting = false
@@ -75,6 +81,14 @@ class Singleton {
 
   // Public Functions
 
+  call<T extends keyof OBSRequestTypes>(request: T, data?: OBSRequestTypes[T]) {
+    return this.#ws.call(request, data)
+  }
+
+  batch(requests: OBSRequestBatchRequest[], options?: OBSRequestBatchOptions) {
+    return this.#ws.callBatch(requests, options)
+  }
+
   connect(props: OBSConnectProps = {}) {
     if (this.#config.client.connecting || this.#config.client.connected)
       return false
@@ -90,20 +104,20 @@ class Singleton {
       .catch((err) => console.error(err))
   }
 
-  off<T extends keyof EventTypes>(
+  off<T extends keyof OBSEventTypes>(
     event: T,
-    fn: (response: EventTypes[T]) => void,
+    fn: (response: OBSEventTypes[T]) => void,
   ) {
     // @ts-expect-error Cannot seem to infer correct typing
-    this.#ws.off(event, fn)
+    return this.#ws.off(event, fn)
   }
 
-  on<T extends keyof EventTypes>(
+  on<T extends keyof OBSEventTypes>(
     event: T,
-    fn: (response: EventTypes[T]) => void,
+    fn: (response: OBSEventTypes[T]) => void,
   ) {
     // @ts-expect-error Cannot seem to infer correct typing
-    this.#ws.on(event, fn)
+    return this.#ws.on(event, fn)
   }
 
   // Static Functions

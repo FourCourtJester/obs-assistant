@@ -3,9 +3,10 @@ import { Container } from 'react-bootstrap'
 
 // Import our components
 import { ActionCreator } from './components'
-import { useOBS } from './hooks'
+import { useCreator, useOBS } from './hooks'
 
 export default function Page() {
+  useCreator()
   useOBS()
 
   return (
