@@ -6,10 +6,12 @@ import {
   OBSEventTypes,
   OBSResponseTypes,
   RequestBatchRequest as OBSRequestBatchRequest,
+  OBSWebSocketError,
 } from 'obs-websocket-js'
 
 // Import our components
 import { OBS } from '@/singletons'
+import { ConnectionPort } from '@/toolkits/creator'
 
 interface GetOBSSourcesProps {
   currentCollection?: string
@@ -20,6 +22,8 @@ class Singleton {
   static #instance: Singleton
 
   #obs = OBS.getInstance()
+
+  #ports = { connected: new BroadcastChannel(ConnectionPort) }
 
   constructor() {
     // Save the instance
@@ -32,8 +36,19 @@ class Singleton {
         .then(({ currentCollection, scenes }) => {
           // TODO: Persistent storage
           console.log({ currentCollection, scenes })
-          // this.#test()
+          this.#ports.connected.postMessage({
+            event: 'connected',
+            data: { currentCollection, scenes },
+          })
         })
+        .catch((err) => console.error(err))
+    })
+
+    this.#obs.on('ConnectionClosed', (response: OBSWebSocketError) => {
+      this.#ports.connected.postMessage({
+        event: 'disconnected',
+        data: { error: response },
+      })
     })
   }
 

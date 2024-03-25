@@ -1,1 +1,2 @@
-export const channelName = (path: string) => `obsa|${path}`
+export const channelName = (...paths: string[]) =>
+  ['obsa'].concat(paths).join('|')

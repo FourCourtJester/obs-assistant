@@ -1,5 +1,5 @@
 // Import core components
-import { useEffect, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import {
   Accordion,
   Badge,
@@ -14,35 +14,56 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faFloppyDisk } from '@fortawesome/free-solid-svg-icons'
 
 // Import our components
-import { useOBS } from '@/hooks'
 import { ToolTip } from '@/components/global/Tooltip'
+import { useChannel, useOBS } from '@/hooks'
+import { ConnectionMessage, ConnectionPort } from '@/toolkits/creator'
 
 /* eslint-disable-next-line */
 export interface CredentialsProps {}
 
 export function Credentials(props: CredentialsProps) {
   // Hooks
+  const channel = useChannel(ConnectionPort)
   const obs = useOBS()
   // States
+  const [isValidated, setValidated] = useState(false)
   const [isOBSConnected, setOBSConnected] = useState(false)
 
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (e.currentTarget.checkValidity() === false) {
+      setValidated(true)
+      return false
+    }
+
+    // @ts-expect-error No valid typing for this transformation
+    const obj = [...new URLSearchParams(new FormData(e.currentTarget))].reduce(
+      (_obj, [key, val]) => ({ ..._obj, [key]: val || undefined }),
+      {},
+    )
+
+    obs.connect(obj)
+    setValidated(false)
+
+    return false
+  }
+
   useEffect(() => {
-    function onClose() {
-      setOBSConnected(false)
+    const outcomes = {
+      connected: () => setOBSConnected(true),
+      disconnected: () => setOBSConnected(false),
     }
 
-    function onOpen() {
-      setOBSConnected(true)
-    }
+    const onMessage = ConnectionMessage.bind(null, outcomes)
 
-    obs.on('ConnectionClosed', onClose)
-    obs.on('ConnectionOpened', onOpen)
+    channel.addEventListener('message', onMessage)
 
     return () => {
-      obs.off('ConnectionClosed', onClose)
-      obs.off('ConnectionOpened', onOpen)
+      channel.removeEventListener('message', onMessage)
     }
-  }, [obs])
+  }, [channel])
 
   return (
     <Accordion.Item
@@ -51,7 +72,12 @@ export function Credentials(props: CredentialsProps) {
     >
       <Accordion.Header>Credentials</Accordion.Header>
       <Accordion.Body>
-        <Form>
+        <Form
+          noValidate
+          validated={isValidated}
+          autoComplete="off"
+          onSubmit={handleSubmit}
+        >
           <legend className="h5 d-flex align-items-center">
             OBS Credentials
             {isOBSConnected ? (
@@ -80,14 +106,23 @@ export function Credentials(props: CredentialsProps) {
               <Form.FloatingLabel label="Port">
                 <Form.Control
                   type="number"
+                  name="port"
                   defaultValue="4455"
                   placeholder="port"
+                  required
                 />
+                <Form.Control.Feedback type="invalid">
+                  Please provide a port number
+                </Form.Control.Feedback>
               </Form.FloatingLabel>
             </Col>
             <Col>
               <Form.FloatingLabel label="Password">
-                <Form.Control type="password" placeholder="password" />
+                <Form.Control
+                  type="password"
+                  name="password"
+                  placeholder="password"
+                />
               </Form.FloatingLabel>
               <Form.Text muted>
                 Leave blank if no authentication is required
