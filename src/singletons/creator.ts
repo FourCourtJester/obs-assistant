@@ -11,7 +11,7 @@ import {
 
 // Import our components
 import { OBS } from '@/singletons'
-import { ConnectionPort } from '@/toolkits/creator'
+import { CollectionPort, ConnectionPort } from '@/toolkits/creator'
 
 interface GetOBSSourcesProps {
   currentCollection?: string
@@ -23,7 +23,10 @@ class Singleton {
 
   #obs = OBS.getInstance()
 
-  #ports = { connected: new BroadcastChannel(ConnectionPort) }
+  #ports = {
+    collection: new BroadcastChannel(CollectionPort),
+    connected: new BroadcastChannel(ConnectionPort),
+  }
 
   constructor() {
     // Save the instance
@@ -35,7 +38,7 @@ class Singleton {
         .then((data) => this.#getOBSSources(data))
         .then(({ currentCollection, scenes }) => {
           // TODO: Persistent storage
-          console.log({ currentCollection, scenes })
+          // console.log({ currentCollection, scenes })
           this.#ports.connected.postMessage({
             event: 'connected',
             data: { currentCollection, scenes },
@@ -50,6 +53,13 @@ class Singleton {
         data: { error: response },
       })
     })
+
+    this.#obs.on(
+      'CurrentSceneCollectionChanged',
+      (response: OBSEventTypes['CurrentSceneCollectionChanged']) => {
+        this.#ports.collection.postMessage(response)
+      },
+    )
   }
 
   // Private Functions
@@ -75,8 +85,6 @@ class Singleton {
   }
 
   #getOBSSources({ currentCollection, scenes }: GetOBSSourcesProps) {
-    console.log(currentCollection, scenes)
-
     return this.#obs
       .batch(
         scenes.map(({ sceneName }) => ({
